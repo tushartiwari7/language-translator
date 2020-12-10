@@ -4,8 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Translator</title>
+    <style>
+        textarea {
+            width: 70vw;
+            margin: auto;
+            height: 10vh;
+            border-radius: 10px;
+            display: block;
+            margin-bottom: 20px;
+        }
+        button {
+            margin: auto;
+            display: block;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello World!</h1>
+    <h1 class="btn-primary">Hello  World! </h1>
+
+    <textarea id="txt-input"
+        placeholder="type something here and see the magic."
+    ></textarea>
+    <button id="btntranslate"> translate </button>
+    <p> converted text will appear here! </p>
+    <div id="output"></div>
+    <script src="script.js" type="text/javascript"></script>
 </body>
 </html>
