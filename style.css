@@ -8,3 +8,6 @@ textarea {
     display: flex;
     flex-wrap: wrap;
 }
+.form-check {
+    padding-right: 4px;
+}
