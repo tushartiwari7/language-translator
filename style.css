@@ -11,3 +11,18 @@ textarea {
 .form-check {
     padding-right: 4px;
 }
+.credits {
+	background: #b9d9eb;
+	color: #000;
+	text-align: center;
+	padding: 10px;
+}
+
+.credits a {
+	color: #444;
+    text-decoration: none;
+    
+}
+.credits a:hover {
+    color: rgb(0, 26, 255);  
+}
