@@ -1,80 +1,61 @@
-var inputElement = document.querySelector("#txt-input");
-var btnElement = document.querySelector("#btntranslate");
-var outputElement = document.querySelector("#output");
+$(document).ready(function(){
+    let $inputElement = $('#txt-input'), btnElement = $('#btntranslate'), outputElement = $('#output');
+    //Add your countries here that is found in the fun translation api
+    let countries = ['german', 'british', 'irish', 'russian','asian', 'emoji', 'quenya', 'boston', 'austrian', 'mandalorian','valyrian', 'dothraki'];
+    
+    countries.forEach(element => {
+        createRadio(element)
+    });
 
-var germanBtnEl = document.querySelector("#german");
-var britishBtnEl = document.querySelector("#british");
-var irishBtnEl = document.querySelector("#irish");
-var russianBtnEl = document.querySelector("#russian");
-var asianBtnEl = document.querySelector("#asian");
-var brooklynBtnEl = document.querySelector("#brooklyn");
-var quenyaBtnEl = document.querySelector("#quenya");
-var bostonBtnEl = document.querySelector("#boston");
-var austrianBtnEl = document.querySelector("#austrian");
-var mandalorianBtnEl = document.querySelector("#mandalorian");
-var valyrianBtnEl = document.querySelector("#valyrian");
-var dothrakiBtnEl = document.querySelector("#dothraki");
+    btnElement.on("click", () => {
+        let inputElement = $inputElement.val() 
+        let choice = getRadioValue('inlineRadioOptions')
+        fetch(getFinalChoice(choice,inputElement))
+            .then(response => response.json())
+            .then(json => showData(json, outputElement))
+            .catch(errData)
+    });
+});
 
-var allApiUrl = {
-    german: "https://api.funtranslations.com/translate/german-accent.json",
-    british: "https://api.funtranslations.com/translate/british.json",
-    irish: "https://api.funtranslations.com/translate/irish.json",
-    russian: "https://api.funtranslations.com/translate/russian-accent.json",
-    asian: "https://api.funtranslations.com/translate/asian-accent.json",
-    brooklyn: "https://api.funtranslations.com/translate/brooklyn.json",
-    quenya: "https://api.funtranslations.com/translate/quenya.json",
-    boston: "https://api.funtranslations.com/translate/boston.json",
-    austrian: "https://api.funtranslations.com/translate/austrian.json",
-    mandalorian: "https://api.funtranslations.com/translate/mandalorian.json",
-    valyrian: "https://api.funtranslations.com/translate/valyrian.json",
-    dothraki: "https://api.funtranslations.com/translate/dothraki.json" 
+function countryApiUrl(country){    
+    // Change code here if the url is not the same as the country
+    // for example if the country is german but the api is german-accent....Change here
+    if (country == 'german' || country == 'russian' || country == 'asian'){
+        return `https://api.funtranslations.com/translate/${country}-accent.json`
+    }
+    return `https://api.funtranslations.com/translate/${country}.json`
 }
 
-function errorHandler(error) {
-    console.log("error occured!",error);
-    alert("Something went wrong with Server! please try again later.");
+function createRadio(country){
+    $('.radio-buttons').append(`
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="${country}" value="${country}">
+            <label class="form-check-label" for="${country}">${firstCapital(country)}</label>
+        </div>
+    `);
 }
 
-function getUrl(rawUrl) {
-    var optimizedUrl = rawUrl + "?text=" + inputElement.value;
-    return optimizedUrl;
-}
-function getChoice() {
-    if(germanBtnEl.checked==true)
-        return getUrl(allApiUrl.german)
-    else if(britishBtnEl.checked==true)
-        return getUrl(allApiUrl.british)
-    else if(irishBtnEl.checked==true)
-        return getUrl(allApiUrl.irish)
-    else if(russianBtnEl.checked==true)
-        return getUrl(allApiUrl.russian)
-    else if(asianBtnEl.checked==true)
-        return getUrl(allApiUrl.asian)
-    else if(brooklynBtnEl.checked==true)
-        return getUrl(allApiUrl.brooklyn)
-    else if(quenyaBtnEl.checked==true)
-        return getUrl(allApiUrl.quenya)
-    else if(bostonBtnEl.checked==true)
-        return getUrl(allApiUrl.boston)
-    else if(austrianBtnEl.checked==true)
-        return getUrl(allApiUrl.austrian)
-    else if(dothrakiBtnEl.checked==true)
-        return getUrl(allApiUrl.dothraki)
-    else if(mandalorianBtnEl.checked==true)
-        return getUrl(allApiUrl.mandalorian)
-    else if(valyrianBtnEl.checked==true)
-        return getUrl(allApiUrl.valyrian)
+function getFinalUrl(rawUrl, inputText){
+    return `${rawUrl}?text=${inputText}`
 }
 
-function callToApi()  {
-    var finalUrl = getChoice();
-    fetch(finalUrl)
-    .then(response => response.json())
-    .then(json => show(json))
-    .catch(errorHandler)
-};
-
-function show(result) {
-    outputElement.innerText = result.contents.translated;
+function getFinalChoice(country, inputText){
+    return getFinalUrl(countryApiUrl(country),inputText)
 }
-btnElement.addEventListener("click", callToApi);
+
+function showData(res, element){
+    element.text(res.contents.translated)
+}
+
+function errData(err){
+    console.log("error occur", err)
+    alert("Something went wrong with Server! please try again later.")
+}
+
+function firstCapital(word){
+    return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+function getRadioValue(name){
+    return $(`input[name=${name}]:checked`).val()
+}
